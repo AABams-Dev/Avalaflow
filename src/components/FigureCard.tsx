@@ -1,87 +1,86 @@
 import React from 'react';
-import { Zap, ShieldCheck, TrendingUp } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 
 interface FigureProps {
-  name: string;
-  image: string;
-  level: number;
-  rarity: 'Common' | 'Rare' | 'Legendary';
-  serialNumber: string;
+  name?: string;
+  image?: string;
+  level?: number;
+  rarity?: 'Common' | 'Rare' | 'Legendary';
+  serialNumber?: string;
+  owned?: boolean;
 }
 
-export const FigureCard: React.FC<FigureProps> = ({ name, image, level, rarity, serialNumber }) => {
-  const rarityColors = {
-    Common: 'border-zinc-800 hover:border-zinc-700',
-    Rare: 'border-blue-900/30 hover:border-blue-500/50 bg-blue-500/5',
-    Legendary: 'border-amber-900/30 hover:border-amber-400/50 bg-amber-500/5',
+export const FigureCard: React.FC<FigureProps> = ({
+  name = 'Unknown NFT',
+  image = '',
+  level = 1,
+  rarity = 'Common',
+  serialNumber = 'N/A',
+  owned = false,
+}) => {
+  const rarityStyles = {
+    Legendary: 'from-amber-400/30 to-amber-600/10 border-amber-500/40 shadow-amber-500/10',
+    Rare: 'from-blue-400/30 to-blue-600/10 border-blue-500/40 shadow-blue-500/10',
+    Common: 'from-zinc-400/20 to-zinc-600/10 border-zinc-500/30 shadow-white/5',
   };
 
-  const rarityText = {
-    Common: 'text-zinc-400',
-    Rare: 'text-blue-400',
-    Legendary: 'text-amber-400',
+  // Professional fallback: A sleek geometric figure silhouette instead of the robot
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    const target = e.target as HTMLImageElement;
+    target.src = "https://images.unsplash.com/photo-1614728263952-84ea256f9679?q=80&w=400&auto=format&fit=crop"; 
   };
 
   return (
-    /* Updated the hover:scale to 1.05 and added -translate-y-2 
-       to give it that "floating" lift seen in your video.
-    */
-    <div className={`group relative w-72 rounded-[2.5rem] border p-5 transition-all duration-500 ease-out 
-      bg-zinc-950 hover:scale-105 hover:-translate-y-3 
-      hover:shadow-[0_30px_60px_-15px_rgba(232,65,66,0.3)] ${rarityColors[rarity]}`}>
-      
-      {/* Image Container: Added a glow effect behind the image on hover */}
-      <div className="relative aspect-[4/5] mb-5 overflow-hidden rounded-[1.8rem] bg-zinc-900 shadow-inner">
-        <img 
-          src={image} 
-          alt={name} 
-          className="h-full w-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700"
+    <div
+      className={`group relative bg-zinc-900 rounded-3xl p-4 border transition-all duration-500
+        ${rarityStyles[rarity] || rarityStyles['Common']}
+        ${owned ? 'shadow-xl border-solid' : 'border-dashed opacity-80'}
+        hover:scale-[1.02] hover:bg-zinc-800/80
+      `}
+    >
+      {/* Rarity Badge */}
+      <div className="absolute top-3 left-3 z-20 text-[10px] font-bold uppercase tracking-widest text-white/90 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10">
+        {rarity || 'Common'}
+      </div>
+
+      {/* Image Container - Spotlight Effect */}
+      <div className="relative aspect-square rounded-2xl overflow-hidden bg-zinc-950 flex items-center justify-center mb-4 border border-white/5 shadow-inner">
+        {/* Gallery Spotlight Background */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle,_var(--tw-gradient-stops))] from-zinc-800/40 via-transparent to-transparent pointer-events-none" />
+        
+        <img
+          src={image && image !== '' ? image : "https://images.unsplash.com/photo-1614728263952-84ea256f9679?q=80&w=400&auto=format&fit=crop"}
+          alt={name}
+          onError={handleImageError}
+          // Changed to object-contain so we see the full figure art
+          className="relative z-10 h-full w-full object-contain p-3 transition-transform duration-700 group-hover:scale-110"
         />
         
-        {/* Level Badge - styled to look more premium */}
-        <div className="absolute top-4 left-4 px-3 py-1 bg-black/80 backdrop-blur-xl rounded-full text-[10px] font-black tracking-tighter text-white border border-white/20 shadow-xl">
-          LVL {level}
-        </div>
-
-        {/* Rarity Tag - Top Right */}
-        <div className={`absolute top-4 right-4 text-[9px] font-bold uppercase tracking-widest ${rarityText[rarity]}`}>
-          {rarity}
-        </div>
+        {/* Subtle scan-line overlay for tech vibe */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-40 z-10" />
       </div>
 
       {/* Info Section */}
-      <div className="space-y-4 px-1">
-        <div>
-          <h3 className="text-xl font-black text-white group-hover:text-red-500 transition-colors tracking-tight">
-            {name}
-          </h3>
-          <p className="text-[10px] font-mono text-zinc-600 uppercase tracking-widest mt-1">
-            ID: {serialNumber}
-          </p>
+      <div className="text-center space-y-1 relative z-20">
+        <h3 className="text-lg font-bold text-white leading-tight truncate px-2">{name}</h3>
+        
+        <div className="flex items-center justify-center gap-2">
+           <span className="text-[10px] px-2 py-0.5 rounded-md bg-white/5 text-zinc-400 border border-white/5 font-bold">
+            LVL {level}
+           </span>
+           <span className="text-[10px] font-mono text-zinc-500">
+            #{typeof serialNumber === 'string' ? (serialNumber.length > 6 ? serialNumber.slice(-6) : serialNumber) : serialNumber}
+           </span>
         </div>
 
-        {/* Stats Section: Updated to look cleaner like the video UI */}
-        <div className="grid grid-cols-2 gap-3">
-          <div className="flex flex-col gap-1 p-3 rounded-2xl bg-zinc-900/80 border border-white/5 group-hover:border-red-500/20 transition-colors">
-            <div className="flex items-center gap-2">
-              <Zap size={14} className="text-red-500" />
-              <span className="text-[10px] text-zinc-500 font-bold uppercase">Power</span>
-            </div>
-            <span className="text-white font-bold text-sm">88</span>
-          </div>
-          
-          <div className="flex flex-col gap-1 p-3 rounded-2xl bg-zinc-900/80 border border-white/5 group-hover:border-green-500/20 transition-colors">
-            <div className="flex items-center gap-2">
-              <TrendingUp size={14} className="text-green-500" />
-              <span className="text-[10px] text-zinc-500 font-bold uppercase">Boost</span>
-            </div>
-            <span className="text-white font-bold text-sm">1.2k</span>
-          </div>
+        {/* Status */}
+        <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-center gap-1.5">
+          <div className={`w-1.5 h-1.5 rounded-full animate-pulse ${owned ? 'bg-green-500' : 'bg-zinc-600'}`} />
+          <span className={`text-[10px] font-black uppercase tracking-wider ${owned ? 'text-green-500' : 'text-zinc-600'}`}>
+            {owned ? 'Verified Digital Twin' : 'Pending Mint'}
+          </span>
         </div>
       </div>
-
-      {/* Avalanche Red "Active" Bar - only shows on hover at the bottom */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-12 h-1 bg-red-600 rounded-full opacity-0 group-hover:opacity-100 blur-[2px] transition-opacity" />
     </div>
   );
 };
