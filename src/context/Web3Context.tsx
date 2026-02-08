@@ -9,11 +9,9 @@ import { WagmiProvider } from 'wagmi';
 import { avalancheFuji } from 'wagmi/chains';
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
-// 1. Configure the Avalanche Network & Wallet Connect
-// Note: For a hackathon, you can use a placeholder for projectId
 const config = getDefaultConfig({
   appName: 'AvalaFlow',
-  projectId: '9542833390c54415891392687063462a', // Placeholder ID
+  projectId: '9542833390c54415891392687063462a',
   chains: [avalancheFuji],
   ssr: false, 
 });
@@ -26,7 +24,7 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider 
           theme={darkTheme({
-            accentColor: '#ef4444', // This matches your AvalaFlow Red
+            accentColor: '#ef4444', 
             accentColorForeground: 'white',
             borderRadius: 'large',
           })}

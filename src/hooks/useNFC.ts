@@ -1,6 +1,5 @@
 import { useState, useCallback } from 'react';
 
-// TypeScript interface for the NFC scan result
 interface NFCResult {
   serialNumber: string;
   message: string;
@@ -12,7 +11,6 @@ export const useNFC = () => {
   const [scannedData, setScannedData] = useState<NFCResult | null>(null);
 
   const startScan = useCallback(async () => {
-    // Check if the browser supports NFC
     if (!('NDEFReader' in window)) {
       setError("NFC is not supported on this browser/device.");
       return;
@@ -22,7 +20,7 @@ export const useNFC = () => {
       setIsScanning(true);
       setError(null);
 
-      // @ts-ignore - NDEFReader is a modern browser API, TS might need a nudge
+    // @ts-ignore - NDEFReader is a modern browser API, TS might need a nudge
       const ndef = new window.NDEFReader();
       await ndef.scan();
 
@@ -33,7 +31,6 @@ export const useNFC = () => {
       ndef.onreading = (event: any) => {
         const { serialNumber, message } = event;
         
-        // Decode the message (NDEF records)
         const decoder = new TextDecoder();
         let decodedMessage = "";
         

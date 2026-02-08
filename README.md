@@ -1,37 +1,54 @@
-# 🔺 AvalaFlow
-**The Physical-to-Digital Bridge on Avalanche**
+🔺 AvalaFlow
+The Physical-to-Digital Bridge on Avalanche
 
-AvalaFlow is a Physical-to-Digital (P2D) platform that brings physical collectibles to life. By scanning unique QR codes on physical figures, collectors can verify authenticity and mint "Digital Twins"—Dynamic NFTs on the Avalanche network that track evolution, stats, and ownership.
+AvalaFlow is a Physical-to-Digital (P2D) ecosystem that bridges the gap between tangible collectibles and the blockchain. By scanning unique QR/NFC markers on physical figures, collectors can verify authenticity and synchronize "Digital Twins"—Dynamic NFTs on the Avalanche network that track real-time evolution, stats, and ownership.
 
----
+🚀 Key Features
+Cinematic QR Identification: A high-fidelity camera interface featuring a CSS-animated "Laser Scan" and haptic feedback for instant physical-to-digital mapping.
 
-##  The Vision
-In the world of collectibles, the gap between physical toys and digital assets is widening. AvalaFlow closes this gap by providing a seamless interface to digitize physical products, ensuring authenticity and creating a new layer of utility for collectors.
+On-Chain Evolution Engine: A dynamic metadata system allowing users to "Level Up" their assets. This triggers real-time state mutations on the Avalanche Fuji Testnet, increasing asset power and value.
 
-##  Key Features
-- **Instant QR Identification:** Integrated camera-based scanning to identify physical assets instantly.
-- **Smart Wallet Integration:** Powered by RainbowKit and Wagmi for a premium, user-friendly connection to the Avalanche Fuji Testnet.
-- **Digital Twin Dashboard:** A high-fidelity gallery to manage your collection and view real-time evolution stats.
-- **Dynamic On-Chain Metadata:** NFTs that aren't just static images, but living assets on the blockchain.
+The Vault: A professional-grade, auto-scrolling gallery (Infinite Carousel) that displays your verified collection with rarity-based UI glows and specialized status badges.
 
-##  Tech Stack
-- **Framework:** [React](https://reactjs.org/) + [Vite](https://vitejs.dev/)
-- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
-- **Blockchain:** [Avalanche](https://www.avax.network/) (Fuji Testnet)
-- **Web3 Libraries:** [Wagmi](https://wagmi.sh/), [RainbowKit](https://www.rainbowkit.com/), [Viem](https://viem.sh/)
-- **Scanning:** [HTML5-QRCode](https://github.com/mebjas/html5-qrcode)
-- **Icons:** [Lucide-React](https://lucide.dev/)
+Live Global Activity Feed: A real-time transaction ticker that monitors the ecosystem, displaying recent mints, evolutions, and network events across the Avalanche network.
 
----
+Smart Wallet Integration: A premium, user-friendly connection via RainbowKit and Wagmi, ensuring digital twins are securely anchored to the user's verified address.
 
-##  Getting Started
+🛠 Tech Stack
+Blockchain: Avalanche (Fuji Testnet) — Leveraged for sub-second finality and low-cost dynamic metadata updates.
 
-### Prerequisites
-- Node.js (v18 or higher)
-- A Web3 Wallet (MetaMask, Core, etc.) connected to Avalanche Fuji.
+NFT Infrastructure: Alchemy NFT API — Used for real-time indexing of the user's on-chain collection.
 
-### Installation
-1. **Clone the repository**
-   ```bash
-   git clone [https://github.com/YOUR_USERNAME/AvalaFlow.git](https://github.com/YOUR_USERNAME/AvalaFlow.git)
-   cd AvalaFlow
+Frontend: React + Vite
+
+Styling & Animation: Tailwind CSS + CSS3 Keyframe Animations.
+
+Web3 Libraries: Wagmi, RainbowKit, Viem
+
+Icons: Lucide-React
+
+💎 The Vision
+In the current market, the value of a physical collectible is static and detached from the digital world. AvalaFlow transforms these figures into living assets. By utilizing Avalanche's scalable infrastructure, we provide an immutable record of authenticity and a gamified layer of utility, proving that the future of collectibles is hybrid.
+
+💻 Local Development
+Prerequisites
+
+Node.js (v18 or higher)
+
+Web3 Wallet (Core or MetaMask) connected to Avalanche Fuji Testnet
+
+SET UP AND INSTALLATION 
+
+# 1. Clone the repository
+git clone https://github.com/YOUR_USERNAME/AvalaFlow.git
+cd AvalaFlow
+
+# 2. Install dependencies
+npm install
+
+# 3. Configure environment variables
+# Create a .env file in the root directory and add:
+VITE_ALCHEMY_KEY=your_alchemy_api_key_here
+
+# 4. Start the development server
+npm run dev
