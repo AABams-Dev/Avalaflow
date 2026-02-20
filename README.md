@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Avalaflow ⚡️
 
-## Getting Started
+**Avalaflow** is a premier Web3 collectible platform on Avalanche C-Chain that bridges physical NFC-tagged figures with digital ownership.
 
-First, run the development server:
+## 🚀 Vision
+Avalaflow empowers collectors to securely verify and mint their physical assets into Dynamic NFTs. These digital twins evolve based on gameplay, earn $AVA rewards through staking, and can be traded in a high-performance marketplace.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🛠 Tech Stack
+- **Frontend**: Next.js 15+ (App Router), TypeScript, Tailwind CSS v4
+- **Animations**: Framer Motion
+- **Web3**: Wagmi, Viem, RainbowKit
+- **Smart Contracts**: Solidity (OpenZeppelin), Hardhat
+- **Backend**: Next.js API Routes (Node.js) with Ethers.js
+- **Storage**: IPFS
+- **Blockchain**: Avalanche C-Chain
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📦 Project Structure
+- `/app`: Main application pages (Explore, Mint, Staking, Marketplace)
+- `/app/api`: Secure backend verification logic
+- `/components`: Premium UI components and Layout
+- `/contracts`: Solidity smart contracts (NFT, Token, Staking)
+- `/lib`: Web3 and UI utilities
+- `WHITEPAPER.md`: Detailed system design and tokenomics
+- `IMPLEMENTATION_PLAN.md`: Technical roadmap
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔑 Key Features
+- **NFC-to-NFT Bridge**: Secure UID verification via backend signing to prevent replay attacks.
+- **Dynamic NFTs**: ERC-721 metadata that updates based on off-chain activity.
+- **$AVA Ecosystem**: Native utility token for staking rewards and governance.
+- **Staking Vaults**: Earn yield by committing digital twins to the network.
+- **Premium UI**: Modern obsidian/neon aesthetic with glassmorphism and micro-animations.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🏁 Getting Started
 
-## Learn More
+1. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+2. **Configure Environment**:
+   Create a `.env.local` file with:
+   ```env
+   VERIFIER_PRIVATE_KEY=your_private_key
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. **Run Development Server**:
+   ```bash
+   npm run dev
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4. **Visit**: [http://localhost:3000](http://localhost:3000)
 
-## Deploy on Vercel
+## 🛡 Security Model
+Avalaflow uses a signature-based verification system. The physical NFC tag's unique ID is combined with the user's wallet address and signed by a secure backend. The smart contract verifies this signature before allowing a mint, ensuring that only authentic physical figures can be digitized.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+Built with ❤️ on **Avalanche**.
