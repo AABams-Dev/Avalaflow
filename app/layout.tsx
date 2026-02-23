@@ -10,6 +10,13 @@ export const metadata: Metadata = {
   description: 'Bridge physical NFC-tagged collectibles with digital ownership on Avalanche C-Chain. Scan, Verify, and Mint.',
 };
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -17,7 +24,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.className} min-h-screen bg-dark-bg text-text-primary antialiased`}>
+      <body className={`${inter.className} min-h-screen bg-dark-bg text-text-primary antialiased overflow-x-hidden`}>
         <Providers>{children}</Providers>
       </body>
     </html>

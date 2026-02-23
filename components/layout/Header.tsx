@@ -25,7 +25,22 @@ export function Header() {
     const truncateAddress = (addr: string) => `${addr.slice(0, 6)}...${addr.slice(-4)}`;
 
     const handleConnect = () => {
-        connect({ connector: injected() });
+        try {
+            if (typeof window !== 'undefined' && !(window as any).ethereum) {
+                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                if (isMobile) {
+                    // Deep link directly to the MetaMask mobile app browser
+                    window.location.href = `https://metamask.app.link/dapp/${window.location.host}`;
+                    return;
+                }
+                alert("Please install a Web3 wallet extension like MetaMask to connect.");
+                return;
+            }
+            connect({ connector: injected() });
+        } catch (e) {
+            console.error("Connection error:", e);
+            alert("Connection error occurred. Please try again.");
+        }
     };
 
     return (
