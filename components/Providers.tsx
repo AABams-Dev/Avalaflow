@@ -9,10 +9,10 @@ import { useState } from 'react';
 import { avalanche, avalancheFuji } from 'wagmi/chains';
 
 export const config = createConfig({
-    chains: [avalanche, avalancheFuji, mainnet],
+    chains: [avalancheFuji, avalanche, mainnet],
     transports: {
-        [avalanche.id]: http(),
         [avalancheFuji.id]: http(),
+        [avalanche.id]: http(),
         [mainnet.id]: http(),
     },
 });

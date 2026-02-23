@@ -1,23 +1,70 @@
 'use client';
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Header } from '@/components/layout/Header'
 import { Smartphone, Zap, ShieldCheck, ArrowRight, Loader2, Sparkles, AlertCircle } from 'lucide-react'
+import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
+import { AVALA_NFT_ABI, AVALA_NFT_ADDRESS } from '@/lib/contracts'
+import { parseEther } from 'viem'
 
 export default function MintPage() {
     const [step, setStep] = useState<'scan' | 'verifying' | 'minting' | 'success'>('scan')
     const [nfcData, setNfcData] = useState<string | null>(null)
+    const [error, setError] = useState<string | null>(null)
 
-    const simulateScan = () => {
+    const { address, isConnected } = useAccount()
+    const { writeContract, data: hash, isPending: isMinting } = useWriteContract()
+
+    const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
+        hash,
+    })
+
+    const handleMint = async () => {
+        if (!isConnected) {
+            alert("Please connect your wallet first!")
+            return
+        }
+
         setStep('verifying')
-        setTimeout(() => {
-            setNfcData("AVA-NFC-" + Math.random().toString(36).substring(7).toUpperCase())
+        setError(null)
+
+        try {
+            // 1. Simulate/Fetch NFC UID (In a real app, this would come from a browser NFC API or mobile bridge)
+            const fakeNfcUid = "AVA-NFC-" + Math.random().toString(36).substring(7).toUpperCase()
+            setNfcData(fakeNfcUid)
+
+            // 2. Call backend to verify and sign
+            const response = await fetch('/api/verify-nfc', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nfcUid: fakeNfcUid, walletAddress: address })
+            })
+
+            const data = await response.json()
+            if (!data.success) throw new Error(data.error || "Verification failed")
+
+            // 3. Mint on Avalanche C-Chain
             setStep('minting')
-            setTimeout(() => {
-                setStep('success')
-            }, 3000)
-        }, 2000)
+            writeContract({
+                address: AVALA_NFT_ADDRESS as `0x${string}`,
+                abi: AVALA_NFT_ABI,
+                functionName: 'mintFigure',
+                args: [data.nfcUid, data.signature, "ipfs://QmPlaceholder..."], // In production, metadata URI would be generated
+            })
+
+        } catch (err: any) {
+            console.error(err)
+            setError(err.message)
+            setStep('scan')
+        }
     }
+
+    // Effect to handle transaction success
+    useEffect(() => {
+        if (isConfirmed) {
+            setStep('success')
+        }
+    }, [isConfirmed])
 
     return (
         <div className="flex flex-col min-h-screen bg-dark-bg">
@@ -39,11 +86,14 @@ export default function MintPage() {
                                 Hold your physical Avalaflow collectible near your device's NFC reader to securely verify its soul.
                             </p>
                             <button
-                                onClick={simulateScan}
+                                onClick={handleMint}
+                                disabled={isMinting || isConfirming}
                                 className="btn-primary w-full py-5 text-xl flex items-center justify-center gap-3 group"
                             >
-                                Scan NFC Figure <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                                {isMinting || isConfirming ? 'Transaction Pending...' : 'Scan NFC Figure'}
+                                <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                             </button>
+                            {error && <p className="mt-4 text-brand-red text-sm font-bold">{error}</p>}
                             <div className="mt-8 flex items-center gap-2 justify-center text-xs text-text-secondary font-bold uppercase tracking-widest">
                                 <ShieldCheck className="w-4 h-4 text-brand-mint" />
                                 End-to-End Encrypted Verification

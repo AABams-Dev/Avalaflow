@@ -1,16 +1,20 @@
 'use client';
 
 import Link from 'next/link';
-import { Wallet, LogOut, Hexagon, Zap, Shield, Search } from 'lucide-react';
+import { Wallet, LogOut, Hexagon, Zap, Shield, Search, Menu, X } from 'lucide-react';
 import { useAccount, useConnect, useDisconnect, useBalance } from 'wagmi';
 import { injected } from 'wagmi/connectors';
+import { useState } from 'react';
 import { formatEther } from 'viem';
 import { cn } from '@/lib/utils';
+import { useStakingData } from '@/hooks/useStakingData';
 
 export function Header() {
     const { address, isConnected } = useAccount();
     const { connect } = useConnect();
     const { disconnect } = useDisconnect();
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const { rewardsBalance } = useStakingData();
 
     const { data: balanceData } = useBalance({
         address: address,
@@ -55,16 +59,38 @@ export function Header() {
                     />
                 </div>
 
-                <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-red/5 border border-brand-red/20 text-[10px] uppercase tracking-widest font-bold text-brand-red">
-                    <div className="w-1.5 h-1.5 rounded-full bg-brand-red animate-pulse" />
-                    Avalanche C-Chain
+                <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-mint/10 border border-brand-mint/30 text-[10px] uppercase tracking-widest font-bold text-brand-mint">
+                    <div className="w-1.5 h-1.5 rounded-full bg-brand-mint animate-pulse" />
+                    Fuji Testnet
                 </div>
+
+                {isConnected && address && parseFloat(avaxBalance) === 0 ? (
+                    <a
+                        href="https://core.app/tools/testnet-faucet/?subnet=c&token=c"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="animate-pulse flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-mint border border-brand-mint text-[10px] uppercase tracking-widest font-black text-dark-bg hover:bg-white transition-all shadow-[0_0_15px_rgba(46,204,113,0.4)]"
+                    >
+                        <Zap className="w-3 h-3" />
+                        Request Faucet AVAX
+                    </a>
+                ) : (
+                    <a
+                        href="https://core.app/tools/testnet-faucet/?subnet=c&token=c"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] uppercase tracking-widest font-bold text-white hover:bg-white/10 hover:text-brand-mint transition-all"
+                    >
+                        <Zap className="w-3 h-3 text-brand-mint" />
+                        Testnet Faucet
+                    </a>
+                )}
 
                 {isConnected && address ? (
                     <div className="flex items-center gap-3">
                         <div className="hidden lg:flex flex-col items-end text-[10px] mr-1">
                             <span className="text-white font-bold">{avaxBalance} AVAX</span>
-                            <span className="text-brand-mint font-bold">420.50 AVA</span>
+                            <span className="text-brand-mint font-bold">{Number(rewardsBalance).toFixed(2)} AVA</span>
                         </div>
 
                         <div className="flex items-center gap-2 bg-dark-card border border-dark-border rounded-full pl-4 pr-1.5 py-1.5 glass-card">
@@ -84,10 +110,34 @@ export function Header() {
                         className="btn-primary flex items-center gap-2 text-sm"
                     >
                         <Wallet className="w-4 h-4" />
-                        <span>Connect Wallet</span>
+                        <span className="hidden sm:inline">Connect Wallet</span>
+                        <span className="sm:hidden">Connect</span>
                     </button>
                 )}
+
+                <button
+                    className="lg:hidden p-2 text-text-secondary hover:text-white transition-colors"
+                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                >
+                    {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                </button>
             </div>
+
+            {/* Mobile Menu Overlay */}
+            {isMobileMenuOpen && (
+                <div className="absolute top-full left-0 w-full bg-dark-bg/95 backdrop-blur-3xl border-b border-dark-border p-6 flex flex-col gap-6 lg:hidden z-50">
+                    <nav className="flex flex-col gap-4">
+                        <Link href="/explore" onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold text-white hover:text-brand-red transition-colors">Explore</Link>
+                        <Link href="/mint" onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold text-white hover:text-brand-red transition-colors">Mint</Link>
+                        <Link href="/staking" onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold text-white hover:text-brand-red transition-colors">Staking</Link>
+                        <Link href="/marketplace" onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-bold text-white hover:text-brand-red transition-colors">Marketplace</Link>
+                        <div className="h-px bg-white/10 my-2" />
+                        <Link href="/whitepaper" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-text-secondary hover:text-white transition-colors">Whitepaper</Link>
+                        <Link href="/help" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-text-secondary hover:text-white transition-colors">Help Center</Link>
+                        <Link href="/terms" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-text-secondary hover:text-white transition-colors">Terms of Use</Link>
+                    </nav>
+                </div>
+            )}
         </header>
     );
 }

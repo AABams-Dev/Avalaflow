@@ -3,12 +3,17 @@
 import { Header } from '@/components/layout/Header'
 import { Hexagon, Zap, TrendingUp, Layers, ArrowRight, Shield } from 'lucide-react'
 
-const STAKED_ITEMS = [
-    { id: 101, name: "Avala-Mecha #402", rewards: "12.4 AVA", apr: "42%", image: "AVA-1" },
-    { id: 102, name: "Frost Dragon #012", rewards: "45.8 AVA", apr: "88%", image: "AVA-2" },
+import { useStakingData } from '@/hooks/useStakingData'
+import { useAvaxPrice } from '@/hooks/useAvaxPrice'
+
+const STAKER_PLACEHOLDER = [
+    { id: 101, name: "Staked NFT #1", rewards: "0.00 AVA", apr: "65%", image: "AVA-1" },
 ]
 
 export default function StakingPage() {
+    const { stakedCount, rewardsBalance, isConnected } = useStakingData();
+    const { price: avaxPrice } = useAvaxPrice();
+
     return (
         <div className="flex flex-col min-h-screen bg-dark-bg">
             <Header />
@@ -28,14 +33,14 @@ export default function StakingPage() {
                                     <TrendingUp className="w-20 h-20 text-brand-red" />
                                 </div>
                                 <div className="text-[10px] uppercase font-black tracking-[0.2em] text-brand-red mb-2">Total Rewards</div>
-                                <div className="text-5xl font-black text-white mb-2">58.2 <span className="text-xl">AVA</span></div>
-                                <div className="text-sm text-brand-mint font-bold">≈ $145.50 USD</div>
+                                <div className="text-5xl font-black text-white mb-2">{Number(rewardsBalance).toLocaleString()} <span className="text-xl">AVA</span></div>
+                                <div className="text-sm text-brand-mint font-bold">≈ ${(Number(rewardsBalance) * 2.5).toFixed(2)} USD</div>
                                 <button className="btn-primary w-full mt-8 py-4">Claim All Rewards</button>
                             </div>
 
                             <div className="glass-card p-10 rounded-[32px] border-white/5">
                                 <div className="text-[10px] uppercase font-black tracking-[0.2em] text-text-secondary mb-2">My Staked Equity</div>
-                                <div className="text-5xl font-black text-white mb-2">2 <span className="text-xl text-text-secondary">/ 12</span></div>
+                                <div className="text-5xl font-black text-white mb-2">{stakedCount} <span className="text-xl text-text-secondary">NFTs</span></div>
                                 <div className="text-sm text-text-secondary">Average APR: <span className="text-brand-mint font-bold">65%</span></div>
                                 <button className="bg-white/5 border border-white/10 text-white w-full mt-8 py-4 rounded-full font-bold hover:bg-white/10 transition-all">Stake New Items</button>
                             </div>
@@ -47,7 +52,7 @@ export default function StakingPage() {
                             Currently Staked
                         </h3>
                         <div className="space-y-4">
-                            {STAKED_ITEMS.map((item) => (
+                            {STAKER_PLACEHOLDER.map((item) => (
                                 <div key={item.id} className="glass-card p-6 rounded-3xl flex items-center justify-between group glass-card-hover border border-white/5">
                                     <div className="flex items-center gap-6">
                                         <div className="w-20 h-20 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
@@ -78,9 +83,9 @@ export default function StakingPage() {
                                 <div className="flex justify-between items-center border-b border-white/5 pb-4">
                                     <div className="flex items-center gap-3">
                                         <Zap className="w-5 h-5 text-brand-mint" />
-                                        <span className="text-sm font-bold text-white/80">$AVA Price</span>
+                                        <span className="text-sm font-bold text-white/80">Avalanche Price</span>
                                     </div>
-                                    <span className="text-white font-black">$2.50</span>
+                                    <span className="text-white font-black">${avaxPrice ? avaxPrice.toLocaleString() : '...'}</span>
                                 </div>
                                 <div className="flex justify-between items-center border-b border-white/5 pb-4">
                                     <div className="flex items-center gap-3">
