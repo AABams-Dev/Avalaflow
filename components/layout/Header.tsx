@@ -2,22 +2,25 @@
 
 import Link from 'next/link';
 import { Wallet, LogOut, Hexagon, Zap, Shield, Search, Menu, X } from 'lucide-react';
-import { useAccount, useConnect, useDisconnect, useBalance } from 'wagmi';
+import { useAccount, useConnect, useDisconnect, useBalance, useSwitchChain } from 'wagmi';
 import { injected } from 'wagmi/connectors';
+import { avalancheFuji } from 'wagmi/chains';
 import { useState } from 'react';
 import { formatEther } from 'viem';
 import { cn } from '@/lib/utils';
 import { useStakingData } from '@/hooks/useStakingData';
 
 export function Header() {
-    const { address, isConnected } = useAccount();
+    const { address, isConnected, chainId } = useAccount();
     const { connect } = useConnect();
     const { disconnect } = useDisconnect();
+    const { switchChain } = useSwitchChain();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const { rewardsBalance } = useStakingData();
 
     const { data: balanceData } = useBalance({
         address: address,
+        chainId: avalancheFuji.id,
     });
 
     const avaxBalance = balanceData ? parseFloat(formatEther(balanceData.value)).toFixed(3) : "0.000";
@@ -36,7 +39,7 @@ export function Header() {
                 alert("Please install a Web3 wallet extension like MetaMask to connect.");
                 return;
             }
-            connect({ connector: injected() });
+            connect({ connector: injected(), chainId: avalancheFuji.id });
         } catch (e) {
             console.error("Connection error:", e);
             alert("Connection error occurred. Please try again.");
@@ -79,7 +82,7 @@ export function Header() {
                     Fuji Testnet
                 </div>
 
-                {isConnected && address && parseFloat(avaxBalance) === 0 ? (
+                {isConnected && address && chainId === avalancheFuji.id && parseFloat(avaxBalance) === 0 ? (
                     <a
                         href="https://core.app/tools/testnet-faucet/?subnet=c&token=c"
                         target="_blank"
@@ -103,10 +106,19 @@ export function Header() {
 
                 {isConnected && address ? (
                     <div className="flex items-center gap-3">
-                        <div className="hidden lg:flex flex-col items-end text-[10px] mr-1">
-                            <span className="text-white font-bold">{avaxBalance} AVAX</span>
-                            <span className="text-brand-mint font-bold">{Number(rewardsBalance).toFixed(2)} AVA</span>
-                        </div>
+                        {chainId !== avalancheFuji.id ? (
+                            <button
+                                onClick={() => switchChain?.({ chainId: avalancheFuji.id })}
+                                className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-red/10 border border-brand-red/30 text-[10px] uppercase tracking-widest font-bold text-brand-red hover:bg-brand-red hover:text-white transition-all"
+                            >
+                                Switch to Fuji
+                            </button>
+                        ) : (
+                            <div className="hidden lg:flex flex-col items-end text-[10px] mr-1">
+                                <span className="text-white font-bold">{avaxBalance} AVAX</span>
+                                <span className="text-brand-mint font-bold">{Number(rewardsBalance).toFixed(2)} AVA</span>
+                            </div>
+                        )}
 
                         <div className="flex items-center gap-2 bg-dark-card border border-dark-border rounded-full pl-4 pr-1.5 py-1.5 glass-card">
                             <span className="text-xs font-bold text-white/90">{truncateAddress(address)}</span>
