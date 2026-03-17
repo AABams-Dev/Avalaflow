@@ -1,271 +1,223 @@
 'use client';
 
 import { Header } from '@/components/layout/Header';
-import { Info, DollarSign, ArrowRightLeft } from 'lucide-react';
+import { Info, DollarSign, ArrowRightLeft, Zap, ShieldCheck, Wallet, ChevronRight, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function LiquidityPage() {
     const [activeTab, setActiveTab] = useState<'deposit' | 'withdraw' | 'swap'>('deposit');
-    const [swapFrom, setSwapFrom] = useState('USDT');
-    const [swapTo, setSwapTo] = useState('KUB');
+    const [swapFrom, setSwapFrom] = useState('USDC');
+    const [swapTo, setSwapTo] = useState('AVA');
 
     return (
-        <div className="flex flex-col min-h-screen bg-dark-bg text-text-primary">
+        <div className="flex flex-col min-h-screen bg-dark-bg selection:bg-brand-mint/30">
             <Header />
 
-            <main className="flex-1 px-4 py-8">
-                <div className="max-w-4xl mx-auto">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                        <h1 className="text-3xl font-bold">Liquidity Vault (KLP)</h1>
-                        <div className="flex items-center gap-2 text-sm text-text-secondary bg-dark-card px-3 py-1.5 rounded-lg border border-dark-border">
-                            <span className="w-2 h-2 rounded-full bg-brand-green animate-pulse" />
-                            <span>Rewards distributed every Wednesday</span>
+            <main className="flex-1 w-full max-w-7xl mx-auto px-6 py-24 pt-32 pb-32">
+                {/* Hero Section */}
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-16">
+                    <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.8 }}
+                    >
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-8 backdrop-blur-md">
+                            <span className="w-2 h-2 rounded-full bg-brand-mint animate-pulse" />
+                            <span className="text-[10px] font-black tracking-[0.2em] uppercase text-white/80">Liquidity Subnet Active</span>
+                        </div>
+                        <h1 className="text-6xl md:text-8xl font-black text-white tracking-tight mb-4 font-display uppercase leading-none">
+                            Yield <span className="text-brand-mint">Orchestra</span>
+                        </h1>
+                        <p className="text-xl text-text-secondary font-medium max-w-xl">
+                            The ALP (Avalaflow Liquidity Protocol). A multi-asset liquidity vault generating real yield for the physical-to-digital bridge.
+                        </p>
+                    </motion.div>
+
+                    <div className="px-6 py-3 glass-card rounded-2xl border-brand-mint/20 flex items-center gap-3">
+                        <TrendingUp className="w-4 h-4 text-brand-mint" />
+                        <span className="text-[10px] font-black text-white uppercase tracking-widest">Protocol Health: Optimal</span>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-20">
+                    {/* Stats Panel */}
+                    <div className="lg:col-span-2 space-y-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="glass-card p-10 rounded-[48px] border-white/5 relative overflow-hidden group"
+                            >
+                                <div className="absolute top-0 right-0 w-40 h-40 bg-brand-mint/5 blur-[60px] -z-10" />
+                                <div className="w-14 h-14 bg-brand-mint/10 rounded-2xl flex items-center justify-center text-brand-mint border border-brand-mint/20 mb-8">
+                                    <DollarSign className="w-7 h-7" />
+                                </div>
+                                <div className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] mb-2">Internal Treasury</div>
+                                <div className="text-4xl font-black text-white font-display mb-6">$14,240,050</div>
+                                <div className="grid grid-cols-2 gap-6 bg-white/5 p-6 rounded-3xl border border-white/5">
+                                    <div>
+                                        <div className="text-[8px] font-black text-white/20 uppercase tracking-widest mb-1 flex items-center gap-1">
+                                            Current APR <Info className="w-3 h-3 text-white/20" />
+                                        </div>
+                                        <div className="text-xl font-black text-brand-mint font-mono">24.5%</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-[8px] font-black text-white/20 uppercase tracking-widest mb-1">ALP Value</div>
+                                        <div className="text-xl font-black text-white font-mono">$1.142</div>
+                                    </div>
+                                </div>
+                            </motion.div>
+
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.1 }}
+                                className="glass-card p-10 rounded-[48px] border-white/5 relative overflow-hidden group"
+                            >
+                                <div className="absolute bottom-0 left-0 w-40 h-40 bg-brand-red/5 blur-[60px] -z-10" />
+                                <div className="w-14 h-14 bg-brand-red/10 rounded-2xl flex items-center justify-center text-brand-red border border-brand-red/20 mb-8">
+                                    <Zap className="w-7 h-7" />
+                                </div>
+                                <div className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] mb-2">Protocol Revenue</div>
+                                <div className="text-4xl font-black text-white font-display mb-6">$842,120</div>
+                                <div className="flex items-center gap-4 p-6 bg-white/5 rounded-3xl border border-white/5">
+                                    <div className="w-10 h-10 rounded-full bg-brand-mint/20 flex items-center justify-center shrink-0">
+                                        <ShieldCheck className="w-5 h-5 text-brand-mint" />
+                                    </div>
+                                    <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest leading-relaxed">
+                                        100% of trading fees are redistributed to ALP stakers. Verified by Avalanche.
+                                    </p>
+                                </div>
+                            </motion.div>
+                        </div>
+
+                        {/* Composition */}
+                        <div className="glass-card p-12 rounded-[56px] border-white/5 backdrop-blur-3xl">
+                            <h3 className="text-2xl font-black text-white font-display uppercase tracking-tight mb-10">Vault Architecture</h3>
+                            <div className="space-y-8">
+                                {[
+                                    { name: "AVA", label: "Native Utility", color: "bg-brand-red", shadow: "shadow-brand-red", target: 40, current: 40.2, price: "$5,696,020" },
+                                    { name: "USDC", label: "Stable Reserve", color: "bg-blue-500", shadow: "shadow-blue-500", target: 30, current: 29.8, price: "$4,272,015" },
+                                    { name: "ETH", label: "Synoptic Bridge", color: "bg-indigo-500", shadow: "shadow-indigo-500", target: 15, current: 15.0, price: "$2,136,007" },
+                                    { name: "BTC", label: "Macro Layer", color: "bg-orange-500", shadow: "shadow-orange-500", target: 15, current: 15.0, price: "$2,136,007" },
+                                ].map((asset, i) => (
+                                    <div key={i} className="group">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <div className="flex items-center gap-4">
+                                                <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center text-white font-black text-xs shadow-2xl", asset.color)}>
+                                                    {asset.name[0]}
+                                                </div>
+                                                <div>
+                                                    <div className="text-sm font-black text-white uppercase tracking-tight">{asset.name}</div>
+                                                    <div className="text-[10px] font-black text-white/20 uppercase tracking-widest mt-0.5">{asset.label}</div>
+                                                </div>
+                                            </div>
+                                            <div className="text-right">
+                                                <div className="text-sm font-black text-white font-mono">{asset.price}</div>
+                                                <div className="text-[10px] font-black text-brand-mint uppercase tracking-widest mt-0.5">Target: {asset.target}%</div>
+                                            </div>
+                                        </div>
+                                        <div className="w-full bg-white/5 h-2 rounded-full overflow-hidden border border-white/5">
+                                            <motion.div
+                                                initial={{ width: 0 }}
+                                                whileInView={{ width: `${asset.current}%` }}
+                                                transition={{ duration: 1, delay: i * 0.1 }}
+                                                className={cn("h-full rounded-full transition-all duration-1000", asset.color, `shadow-[0_0_15px_rgba(var(--${asset.name.toLowerCase()}-rgb),0.5)]`)}
+                                            />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-                        {/* Stats Card */}
-                        <div className="bg-dark-card border border-dark-border rounded-2xl p-6 relative overflow-hidden group">
-                            <div className="absolute top-0 right-0 p-32 bg-brand-green/5 blur-[80px] rounded-full pointer-events-none group-hover:bg-brand-green/10 transition-colors" />
+                    {/* Action Hub */}
+                    <div className="space-y-6">
+                        <div className="glass-card p-10 rounded-[56px] border-white/10 bg-gradient-to-br from-white/5 to-transparent backdrop-blur-3xl sticky top-32">
+                            <div className="flex gap-2 mb-10 bg-white/5 p-1.5 rounded-3xl border border-white/5">
+                                {(['deposit', 'withdraw', 'swap'] as const).map((tab) => (
+                                    <button
+                                        key={tab}
+                                        onClick={() => setActiveTab(tab)}
+                                        className={cn(
+                                            "flex-1 py-4 rounded-[20px] text-[10px] font-black uppercase tracking-widest transition-all",
+                                            activeTab === tab ? "bg-white text-dark-bg shadow-2xl" : "text-white/40 hover:text-white"
+                                        )}
+                                    >
+                                        {tab}
+                                    </button>
+                                ))}
+                            </div>
 
-                            <div className="relative z-10">
-                                <div className="flex items-center gap-2 mb-6">
-                                    <div className="w-10 h-10 bg-brand-green/20 rounded-lg flex items-center justify-center text-brand-green shadow-[0_0_15px_rgba(63,182,139,0.2)]">
-                                        <DollarSign className="w-6 h-6" />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-text-secondary text-sm font-medium">Total Value Locked</h3>
-                                        <div className="text-3xl font-bold font-mono text-white">$14,240,050</div>
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-6 bg-dark-bg/50 p-4 rounded-xl border border-dark-border">
-                                    <div>
-                                        <div className="text-text-secondary text-xs mb-1 flex items-center gap-1">
-                                            Current APR <Info className="w-3 h-3 cursor-help text-text-secondary/70" />
+                            <div className="space-y-8 mb-10">
+                                {activeTab === 'swap' ? (
+                                    <div className="space-y-6">
+                                        <div className="space-y-2">
+                                            <div className="flex justify-between px-2">
+                                                <label className="text-[10px] font-black text-white/20 uppercase tracking-widest">Syphon From</label>
+                                                <span className="text-[10px] font-black text-brand-mint uppercase tracking-widest">Balance: 2,450.00</span>
+                                            </div>
+                                            <div className="relative">
+                                                <input type="text" placeholder="0.00" className="w-full bg-white/5 border border-white/5 rounded-[28px] pl-6 pr-28 py-6 text-2xl font-black text-white font-mono focus:border-brand-mint/30 focus:bg-white/10 transition-all outline-none" />
+                                                <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 bg-dark-bg px-4 py-2 rounded-2xl border border-white/10">
+                                                    <span className="text-xs font-black text-white">USDC</span>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div className="text-xl font-bold text-brand-green font-mono">24.5%</div>
-                                    </div>
-                                    <div>
-                                        <div className="text-text-secondary text-xs mb-1">KLP Price</div>
-                                        <div className="text-xl font-bold text-white font-mono">$1.142</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Actions Card */}
-                        <div className="bg-dark-card border border-dark-border rounded-2xl p-6 shadow-xl">
-                            <div className="flex gap-2 mb-6 bg-dark-bg p-1 rounded-lg">
-                                <button
-                                    onClick={() => setActiveTab('deposit')}
-                                    className={cn(
-                                        "flex-1 py-2 rounded-md font-bold text-sm transition-all",
-                                        activeTab === 'deposit' ? "bg-dark-card shadow text-white ring-1 ring-dark-border" : "text-text-secondary hover:text-white"
-                                    )}
-                                >
-                                    Deposit
-                                </button>
-                                <button
-                                    onClick={() => setActiveTab('withdraw')}
-                                    className={cn(
-                                        "flex-1 py-2 rounded-md font-bold text-sm transition-all",
-                                        activeTab === 'withdraw' ? "bg-dark-card shadow text-white ring-1 ring-dark-border" : "text-text-secondary hover:text-white"
-                                    )}
-                                >
-                                    Withdraw
-                                </button>
-                                <button
-                                    onClick={() => setActiveTab('swap')}
-                                    className={cn(
-                                        "flex-1 py-2 rounded-md font-bold text-sm transition-all flex items-center justify-center gap-1",
-                                        activeTab === 'swap' ? "bg-dark-card shadow text-white ring-1 ring-dark-border" : "text-text-secondary hover:text-white"
-                                    )}
-                                >
-                                    Swap <ArrowRightLeft className="w-3 h-3" />
-                                </button>
-                            </div>
-
-                            {activeTab === 'swap' ? (
-                                /* SWAP UI */
-                                <div className="mb-6 space-y-4">
-                                    <div>
-                                        <label className="text-text-secondary text-xs mb-1 block">From</label>
-                                        <div className="relative group">
-                                            <input
-                                                type="text"
-                                                placeholder="0.00"
-                                                className="w-full bg-dark-bg border border-dark-border rounded-lg pl-4 pr-24 py-3 text-white font-mono outline-none focus:border-brand-green/50 focus:ring-1 focus:ring-brand-green/50 transition-all placeholder:text-dark-border"
-                                            />
-                                            <div className="absolute right-2 top-1/2 -translate-y-1/2">
-                                                <select
-                                                    value={swapFrom}
-                                                    onChange={(e) => setSwapFrom(e.target.value)}
-                                                    className="bg-dark-card border border-dark-border rounded px-2 py-1 text-xs font-bold text-white outline-none cursor-pointer"
-                                                >
-                                                    <option value="USDT">USDT</option>
-                                                    <option value="KUB">KUB</option>
-                                                    <option value="KKUB">KKUB</option>
-                                                    <option value="KUSDT">KUSDT</option>
-                                                </select>
+                                        <div className="flex justify-center -my-3 relative z-10">
+                                            <button className="p-3 rounded-full bg-white text-dark-bg border border-white hover:scale-110 transition-transform">
+                                                <ArrowRightLeft className="w-4 h-4 rotate-90" />
+                                            </button>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <div className="flex justify-between px-2">
+                                                <label className="text-[10px] font-black text-white/20 uppercase tracking-widest">Settle To</label>
+                                            </div>
+                                            <div className="relative">
+                                                <input type="text" placeholder="0.00" readOnly className="w-full bg-white/5 border border-white/5 rounded-[28px] pl-6 pr-28 py-6 text-2xl font-black text-white/20 font-mono outline-none" />
+                                                <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 bg-dark-bg px-4 py-2 rounded-2xl border border-white/10">
+                                                    <span className="text-xs font-black text-white">AVA</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div className="flex justify-center">
-                                        <button className="p-2 rounded-full bg-dark-bg border border-dark-border hover:border-brand-green transition-colors">
-                                            <ArrowRightLeft className="w-4 h-4 text-text-secondary rotate-90" />
-                                        </button>
-                                    </div>
-
-                                    <div>
-                                        <label className="text-text-secondary text-xs mb-1 block">To (Estimated)</label>
-                                        <div className="relative group">
-                                            <input
-                                                type="text"
-                                                placeholder="0.00"
-                                                readOnly
-                                                className="w-full bg-dark-bg/50 border border-dark-border rounded-lg pl-4 pr-24 py-3 text-white font-mono outline-none cursor-not-allowed"
-                                            />
-                                            <div className="absolute right-2 top-1/2 -translate-y-1/2">
-                                                <select
-                                                    value={swapTo}
-                                                    onChange={(e) => setSwapTo(e.target.value)}
-                                                    className="bg-dark-card border border-dark-border rounded px-2 py-1 text-xs font-bold text-white outline-none cursor-pointer"
-                                                >
-                                                    <option value="KUB">KUB</option>
-                                                    <option value="KKUB">KKUB</option>
-                                                    <option value="KUSDT">KUSDT</option>
-                                                    <option value="USDT">USDT</option>
-                                                </select>
+                                ) : (
+                                    <div className="space-y-6">
+                                        <div className="space-y-2">
+                                            <div className="flex justify-between px-2">
+                                                <label className="text-[10px] font-black text-white/20 uppercase tracking-widest">Deposit Principal</label>
+                                                <span className="text-[10px] font-black text-brand-mint uppercase tracking-widest">Wallet: 12,040.80</span>
+                                            </div>
+                                            <div className="relative">
+                                                <input type="text" placeholder="0.00" className="w-full bg-white/5 border border-white/5 rounded-[28px] pl-6 pr-28 py-6 text-2xl font-black text-white font-mono focus:border-brand-mint/30 focus:bg-white/10 transition-all outline-none" />
+                                                <button className="absolute right-4 top-1/2 -translate-y-1/2 px-4 py-2 bg-brand-mint text-dark-bg text-[10px] font-black uppercase tracking-widest rounded-xl hover:scale-105 transition-transform">MAX</button>
+                                            </div>
+                                        </div>
+                                        <div className="space-y-4 px-4 bg-white/5 p-6 rounded-[32px] border border-white/5">
+                                            <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-white/40">
+                                                <span>Protocol Fee</span>
+                                                <span className="text-white">0.02%</span>
+                                            </div>
+                                            <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-white/40">
+                                                <span>{activeTab === 'deposit' ? 'ALP Minted' : 'ALP Burned'}</span>
+                                                <span className="text-brand-mint">0.00</span>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            ) : (
-                                /* DEPOSIT/WITHDRAW UI */
-                                <div className="mb-6">
-                                    <div className="flex justify-between text-sm mb-2">
-                                        <span className="text-text-secondary">Amount</span>
-                                        <span className="text-text-secondary text-xs">Wallet: 0.00 USDC</span>
-                                    </div>
-                                    <div className="relative group">
-                                        <input
-                                            type="text"
-                                            placeholder="0.00"
-                                            className="w-full bg-dark-bg border border-dark-border rounded-lg px-4 py-3 text-white font-mono outline-none focus:border-brand-green/50 focus:ring-1 focus:ring-brand-green/50 transition-all placeholder:text-dark-border"
-                                        />
-                                        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                                            <span className="text-xs font-bold text-text-secondary">USDC</span>
-                                            <button className="text-brand-green text-xs font-bold hover:underline">MAX</button>
-                                        </div>
-                                    </div>
+                                )}
+                            </div>
 
-                                    <div className="space-y-2 mt-6 text-xs text-text-secondary">
-                                        <div className="flex justify-between">
-                                            <span>Fees</span>
-                                            <span className="font-mono text-white">-</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span>{activeTab === 'deposit' ? 'Receive' : 'Burn'}</span>
-                                            <span className="font-mono text-white">- KLP</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            <button className={cn(
-                                "w-full py-3 text-dark-bg font-bold rounded-lg hover:opacity-90 transition-all shadow-[0_0_15px_rgba(63,182,139,0.2)]",
-                                activeTab === 'deposit' || activeTab === 'swap' ? "bg-brand-green" : "bg-brand-green opacity-80"
-                            )}>
-                                {activeTab === 'deposit' ? 'Buy KLP' : activeTab === 'withdraw' ? 'Sell KLP' : 'Swap Tokens'}
+                            <button className="w-full py-6 rounded-[32px] bg-brand-mint text-dark-bg font-black uppercase tracking-[0.3em] text-sm shadow-[0_20px_40px_rgba(0,255,163,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+                                {activeTab === 'deposit' ? 'Initiate Mint' : activeTab === 'withdraw' ? 'Burn & Settle' : 'Execute Swap'}
+                                <ChevronRight className="w-5 h-5" />
                             </button>
-                        </div>
-                    </div>
 
-                    {/* Breakdown */}
-                    <div className="bg-dark-card border border-dark-border rounded-2xl p-6">
-                        <h3 className="font-bold mb-6 text-lg">Vault Composition</h3>
-                        <div className="space-y-6">
-
-                            {/* KUB */}
-                            <div>
-                                <div className="flex items-center justify-between mb-2">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white font-bold text-xs shadow-lg">K</div>
-                                        <div>
-                                            <div className="font-bold text-sm text-white">KUB</div>
-                                            <div className="text-xs text-text-secondary">Target: 40%</div>
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <div className="font-bold text-sm text-white font-mono">$5,696,020</div>
-                                        <div className="text-xs text-text-secondary">Current: 40.0%</div>
-                                    </div>
-                                </div>
-                                <div className="w-full bg-dark-bg h-2 rounded-full overflow-hidden border border-dark-border/50">
-                                    <div className="bg-emerald-500 w-[40.0%] h-full rounded-full shadow-[0_0_10px_#10b981]" />
-                                </div>
-                            </div>
-
-                            {/* KUSDT */}
-                            <div>
-                                <div className="flex items-center justify-between mb-2">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-[#26a17b] flex items-center justify-center text-white font-bold text-[10px] shadow-lg">KT</div>
-                                        <div>
-                                            <div className="font-bold text-sm text-white">KUSDT</div>
-                                            <div className="text-xs text-text-secondary">Target: 30%</div>
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <div className="font-bold text-sm text-white font-mono">$4,272,015</div>
-                                        <div className="text-xs text-text-secondary">Current: 30.0%</div>
-                                    </div>
-                                </div>
-                                <div className="w-full bg-dark-bg h-2 rounded-full overflow-hidden border border-dark-border/50">
-                                    <div className="bg-[#26a17b] w-[30.0%] h-full rounded-full shadow-[0_0_10px_#26a17b]" />
-                                </div>
-                            </div>
-
-                            {/* KKUB */}
-                            <div>
-                                <div className="flex items-center justify-between mb-2">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-[#1e40af] flex items-center justify-center text-white font-bold text-[10px] shadow-lg">KK</div>
-                                        <div>
-                                            <div className="font-bold text-sm text-white">KKUB</div>
-                                            <div className="text-xs text-text-secondary">Target: 15%</div>
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <div className="font-bold text-sm text-white font-mono">$2,136,007</div>
-                                        <div className="text-xs text-text-secondary">Current: 15.0%</div>
-                                    </div>
-                                </div>
-                                <div className="w-full bg-dark-bg h-2 rounded-full overflow-hidden border border-dark-border/50">
-                                    <div className="bg-[#1e40af] w-[15.0%] h-full rounded-full shadow-[0_0_10px_#1e40af]" />
-                                </div>
-                            </div>
-
-                            {/* USDT */}
-                            <div>
-                                <div className="flex items-center justify-between mb-2">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-[#2775ca] flex items-center justify-center text-white font-bold text-xs shadow-lg">$</div>
-                                        <div>
-                                            <div className="font-bold text-sm text-white">USDT</div>
-                                            <div className="text-xs text-text-secondary">Target: 15%</div>
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <div className="font-bold text-sm text-white font-mono">$2,136,007</div>
-                                        <div className="text-xs text-text-secondary">Current: 15.0%</div>
-                                    </div>
-                                </div>
-                                <div className="w-full bg-dark-bg h-2 rounded-full overflow-hidden border border-dark-border/50">
-                                    <div className="bg-[#2775ca] w-[15.0%] h-full rounded-full shadow-[0_0_10px_#2775ca]" />
+                            <div className="mt-8 pt-8 border-t border-white/5 flex flex-col items-center gap-6">
+                                <div className="flex items-center gap-3 px-6 py-3 bg-white/5 rounded-2xl border border-white/5 w-full">
+                                    <ShieldCheck className="w-5 h-5 text-brand-mint" />
+                                    <span className="text-[10px] font-black text-white/40 uppercase tracking-widest">Audited by Synthetix Labs</span>
                                 </div>
                             </div>
                         </div>
@@ -273,5 +225,5 @@ export default function LiquidityPage() {
                 </div>
             </main>
         </div>
-    )
+    );
 }

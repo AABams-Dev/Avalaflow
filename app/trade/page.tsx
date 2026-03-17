@@ -6,65 +6,72 @@ import { OrderForm } from '@/components/trading/OrderForm';
 import { AccountPanel } from '@/components/trading/AccountPanel';
 import { useTradingStore } from '@/store/tradingStore';
 import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
+import { Activity, Zap, TrendingUp, Shield, BarChart3 } from 'lucide-react';
 
 export default function TradePage() {
     const { chartTimeframe, setChartTimeframe } = useTradingStore();
     const timeframes = ['1m', '5m', '15m', '30m', '1h', '2h', '4h', '8h', '1d', '1M', '2M', '4M', '1Y'];
 
     return (
-        <div className="flex flex-col h-screen overflow-hidden bg-dark-bg text-text-primary">
+        <div className="flex flex-col h-screen overflow-hidden bg-dark-bg text-text-primary selection:bg-brand-red/30">
             <Header />
 
             {/* Main Content Area - Grid Layout */}
-            <div className="flex-1 min-h-0">
-                <div className="grid grid-cols-1 xl:grid-cols-12 gap-4 h-full min-h-0 p-4">
+            <main className="flex-1 min-h-0 pt-20 p-4">
+                <div className="grid grid-cols-1 xl:grid-cols-12 gap-4 h-full min-h-0">
 
-                    {/* Chart Section */}
-                    <div className="xl:col-span-6 min-w-0 min-h-0 flex flex-col bg-dark-bg rounded-xl overflow-hidden border border-dark-border relative">
-                        {/* Top Bar inside Chart Card */}
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 py-3 border-b border-dark-border bg-dark-card/50 backdrop-blur-md z-10 gap-4 shrink-0">
-                            {/* Asset Info Header */}
-                            <div className="flex items-center justify-between w-full sm:w-auto gap-4 md:gap-8">
-                                <div className="flex items-center gap-3 cursor-pointer hover:bg-white/5 p-1 rounded transition-colors group">
-                                    <div className="w-8 h-8 bg-gradient-to-br from-[#f7931a] to-[#c2700f] rounded-full flex items-center justify-center font-bold text-white text-sm shadow-[0_0_10px_rgba(247,147,26,0.3)]">₿</div>
+                    {/* Left & Middle: Chart & Market Info */}
+                    <div className="xl:col-span-9 min-w-0 min-h-0 flex flex-col gap-4">
+
+                        {/* Market Bar */}
+                        <div className="glass-card px-6 py-4 rounded-[32px] border-white/5 flex flex-wrap items-center justify-between gap-6 overflow-hidden relative group">
+                            <div className="absolute inset-0 bg-gradient-to-r from-brand-red/5 via-transparent to-brand-mint/5 opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+
+                            <div className="flex items-center gap-6 relative z-10">
+                                <div className="flex items-center gap-4 cursor-pointer hover:bg-white/5 p-2 rounded-2xl transition-all group/asset">
+                                    <div className="w-10 h-10 bg-gradient-to-br from-brand-red to-[#FF8A8A] rounded-full flex items-center justify-center font-black text-white text-lg shadow-[0_0_20px_rgba(232,65,66,0.3)] group-hover/asset:scale-110 transition-transform">₿</div>
                                     <div>
-                                        <h2 className="font-bold text-lg leading-tight group-hover:text-brand-green transition-colors">BTC/USD</h2>
-                                        <span className="text-[10px] text-text-secondary bg-dark-border px-1 rounded">Perpetual</span>
+                                        <h2 className="font-black text-xl leading-none font-display uppercase tracking-tight">BTC <span className="text-text-secondary/50">/</span> USD</h2>
+                                        <div className="flex items-center gap-2 mt-1">
+                                            <span className="text-[10px] text-text-secondary font-black bg-white/5 px-2 py-0.5 rounded-full border border-white/5 uppercase tracking-widest">Perp-Vault</span>
+                                            <div className="w-1.5 h-1.5 rounded-full bg-brand-mint animate-pulse"></div>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div className="h-8 w-px bg-dark-border hidden sm:block" />
+                                <div className="h-10 w-px bg-white/5 hidden md:block" />
 
-                                <div className="flex gap-4 md:gap-8 text-xs font-mono overflow-x-auto no-scrollbar items-center">
+                                <div className="flex gap-8 text-xs font-mono items-center">
                                     <div className="flex flex-col">
-                                        <span className="text-text-secondary text-[10px] mb-0.5">Mark Price</span>
-                                        <span className="text-brand-green font-bold text-base">$64,230.5</span>
+                                        <span className="text-text-secondary text-[10px] font-black uppercase tracking-widest mb-1">Index Price</span>
+                                        <span className="text-brand-mint font-black text-lg font-display">$64,230.50</span>
                                     </div>
                                     <div className="flex flex-col">
-                                        <span className="text-text-secondary text-[10px] mb-0.5">Index Price</span>
-                                        <span className="text-white text-sm">$64,228.1</span>
+                                        <span className="text-text-secondary text-[10px] font-black uppercase tracking-widest mb-1">24h Change</span>
+                                        <span className="text-brand-mint font-black text-sm">+2.42%</span>
                                     </div>
-                                    <div className="hidden md:flex flex-col">
-                                        <span className="text-text-secondary text-[10px] mb-0.5">24h Change</span>
-                                        <span className="text-brand-green">+2.4%</span>
+                                    <div className="hidden lg:flex flex-col">
+                                        <span className="text-text-secondary text-[10px] font-black uppercase tracking-widest mb-1">24h Volume</span>
+                                        <span className="text-white font-black text-sm">$1.24B</span>
                                     </div>
-                                    <div className="hidden md:flex flex-col">
-                                        <span className="text-text-secondary text-[10px] mb-0.5">Funding / 8h</span>
-                                        <span className="text-brand-yellow">0.0100%</span>
+                                    <div className="hidden lg:flex flex-col">
+                                        <span className="text-text-secondary text-[10px] font-black uppercase tracking-widest mb-1">Funding</span>
+                                        <span className="text-[#FFD600] font-black text-sm">0.0100%</span>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Timeframe Selector */}
-                            <div className="flex bg-dark-bg rounded-lg p-1 border border-dark-border overflow-x-auto max-w-full no-scrollbar shrink-0">
+                            <div className="flex bg-white/5 rounded-full p-1.5 border border-white/5 overflow-x-auto max-w-full no-scrollbar relative z-10">
                                 {timeframes.map(tf => (
                                     <button
                                         key={tf}
                                         onClick={() => setChartTimeframe(tf)}
                                         className={cn(
-                                            "px-2.5 py-1 text-xs font-medium rounded transition-all whitespace-nowrap",
+                                            "px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-full transition-all whitespace-nowrap",
                                             chartTimeframe === tf
-                                                ? "bg-dark-card text-brand-green shadow-sm ring-1 ring-dark-border"
+                                                ? "bg-white text-dark-bg shadow-lg"
                                                 : "text-text-secondary hover:text-white hover:bg-white/5"
                                         )}
                                     >
@@ -74,43 +81,44 @@ export default function TradePage() {
                             </div>
                         </div>
 
-                        {/* Chart Component */}
-                        <div className="flex-1 relative min-h-0 w-full bg-dark-bg">
-                            <TradingChart />
-                            {/* Floating Indicators Overlay */}
-                            <div className="absolute top-4 left-4 flex gap-2 pointer-events-none z-20">
-                                <div className="bg-dark-card/80 backdrop-blur border border-dark-border px-2 py-1 round text-[10px] text-text-secondary">
-                                    O: <span className="text-green-400">64,210</span> H: <span className="text-green-400">64,250</span> L: <span className="text-red-400">64,190</span> C: <span className="text-green-400">64,230</span>
+                        {/* Chart Component Area */}
+                        <div className="flex-1 glass-card rounded-[40px] border-white/5 overflow-hidden relative group">
+                            <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-soft-light pointer-events-none"></div>
+                            <div className="h-full w-full">
+                                <TradingChart />
+                            </div>
+
+                            {/* Floating Chart Stats Overlay */}
+                            <div className="absolute top-6 left-6 flex gap-3 pointer-events-none z-20">
+                                <div className="glass-card/90 backdrop-blur-xl border border-white/10 px-4 py-2 rounded-2xl text-[10px] font-mono text-text-secondary shadow-2xl">
+                                    <span className="font-black text-white/40 mr-1">O</span> <span className="text-brand-mint font-bold">64,210.3</span>
+                                    <span className="mx-2 opacity-20">|</span>
+                                    <span className="font-black text-white/40 mr-1">H</span> <span className="text-brand-mint font-bold">64,250.7</span>
+                                    <span className="mx-2 opacity-20">|</span>
+                                    <span className="font-black text-white/40 mr-1">L</span> <span className="text-brand-red font-bold">64,190.2</span>
+                                    <span className="mx-2 opacity-20">|</span>
+                                    <span className="font-black text-white/40 mr-1">C</span> <span className="text-brand-mint font-bold">64,230.5</span>
+                                </div>
+                                <div className="glass-card/90 backdrop-blur-xl border border-white/10 px-4 py-2 rounded-2xl text-[10px] font-black text-brand-mint uppercase tracking-[0.2em] shadow-2xl flex items-center gap-2">
+                                    <Activity className="w-3 h-3" /> Live Protocol
                                 </div>
                             </div>
                         </div>
+
+                        {/* Positions / History (Integrated into Account Panel below but could be a separate row if needed) */}
                     </div>
 
-                    {/* Order Panel */}
-                    <div className="xl:col-span-3 min-w-0 min-h-0 flex flex-col bg-dark-card rounded-xl overflow-hidden border border-dark-border shadow-lg">
-                        <OrderForm />
-                    </div>
-
-                    {/* Account Panel */}
-                    <div className="xl:col-span-3 min-w-0 min-h-0 flex flex-col bg-dark-card rounded-xl overflow-hidden border border-dark-border shadow-lg">
-                        <AccountPanel />
+                    {/* Right: Execution Stack */}
+                    <div className="xl:col-span-3 min-w-0 min-h-0 flex flex-col gap-4">
+                        <div className="flex-1 min-h-0 flex flex-col glass-card rounded-[40px] border-white/5 overflow-hidden shadow-2xl">
+                            <OrderForm />
+                        </div>
+                        <div className="h-[300px] shrink-0 flex flex-col glass-card rounded-[40px] border-white/5 overflow-hidden shadow-2xl">
+                            <AccountPanel />
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            {/* Mobile View: Tabs for Order/Account (Visible only on small screens if we wanted, but Grid handles responsive stacking via grid-cols-1) */}
-            {/* Note: The Grid above is grid-cols-1 by default, so on mobile they will stack naturally. 
-                However, if a specific mobile tab view is preferred, we would hide the grid-cols-1 panels and show this. 
-                For now, we let the Grid handle responsiveness as requested 'Layout stable on resize'. 
-                The user prompt didn't strictly ask to remove the mobile tabs, but implied a single unified grid structure. 
-                I will comment out the old mobile tabs to rely on the clean grid stack. */}
-            {/* 
-            <div className="lg:hidden flex border-t border-dark-border bg-dark-card">
-                <button className="flex-1 py-4 text-center font-bold text-sm bg-dark-bg border-r border-dark-border text-brand-green">Order</button>
-                <button className="flex-1 py-4 text-center font-bold text-sm text-text-secondary">Positions (1)</button>
-                <button className="flex-1 py-4 text-center font-bold text-sm text-text-secondary">Account</button>
-            </div> 
-            */}
+            </main>
         </div>
     );
 }

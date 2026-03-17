@@ -1,5 +1,8 @@
 'use client';
 
+import { Wallet, Briefcase, Activity, TrendingUp, ShieldCheck, Zap } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
 export function AccountPanel() {
     // Mock data
     const positions = [
@@ -18,86 +21,119 @@ export function AccountPanel() {
     ];
 
     return (
-        <div className="h-full flex flex-col bg-dark-card">
-            {/* Fixed Header Stats (Non-scrollable) */}
-            <div className="p-4 border-b border-dark-border">
-                <h3 className="text-text-secondary text-xs uppercase font-bold mb-4 tracking-wider">Account</h3>
-                <div className="space-y-4">
-                    <div className="p-4 rounded-xl bg-dark-bg border border-dark-border shadow-inner">
-                        <div className="text-text-secondary text-xs mb-1">Total Collateral</div>
-                        <div className="text-2xl font-bold text-white font-mono">$1,420.50</div>
+        <div className="h-full flex flex-col bg-transparent">
+            {/* Account Header */}
+            <div className="p-6 border-b border-white/5">
+                <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-xl font-black text-white font-display uppercase tracking-tight flex items-center gap-2">
+                        <Wallet className="w-5 h-5 text-brand-mint" /> Portfolio
+                    </h3>
+                    <div className="px-3 py-1 bg-brand-mint/10 border border-brand-mint/30 rounded-full text-[10px] font-black text-brand-mint uppercase tracking-widest">
+                        Standard
                     </div>
+                </div>
 
-                    <div className="space-y-2.5">
-                        <div className="flex justify-between text-xs">
-                            <span className="text-text-secondary">Unrealized PnL</span>
-                            <span className="text-brand-green font-mono">+$45.20</span>
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="p-5 rounded-3xl bg-white/5 border border-white/5 group hover:bg-white/10 transition-all duration-500">
+                        <div className="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-1 flex items-center gap-1.5">
+                            <Activity className="w-3 h-3" /> Equity
                         </div>
-                        <div className="flex justify-between text-xs">
-                            <span className="text-text-secondary">Margin Ratio</span>
-                            <span className="text-brand-green">Safe (12%)</span>
+                        <div className="text-2xl font-black text-white font-display">$1,420.50</div>
+                    </div>
+                    <div className="p-5 rounded-3xl bg-white/5 border border-white/5 group hover:bg-white/10 transition-all duration-500">
+                        <div className="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-1 flex items-center gap-1.5">
+                            <TrendingUp className="w-3 h-3 text-brand-mint" /> Unr. PnL
                         </div>
-                        <div className="w-full bg-dark-bg h-1.5 rounded-full overflow-hidden mt-1">
-                            <div className="bg-brand-green w-[12%] h-full rounded-full shadow-[0_0_10px_#3fb68b]" />
-                        </div>
+                        <div className="text-2xl font-black text-brand-mint font-display">+$45.20</div>
                     </div>
                 </div>
             </div>
 
-            {/* Scrollable Positions List */}
-            <div className="flex-1 min-h-0 overflow-y-auto p-4 custom-scrollbar">
-                <h3 className="text-text-secondary text-xs uppercase font-bold mb-4 sticky top-0 bg-dark-card py-2 z-10 flex justify-between items-center">
-                    <span>Positions</span>
-                    <span className="bg-dark-bg px-2 py-0.5 rounded text-[10px]">{positions.length}</span>
-                </h3>
+            {/* Scrollable Content */}
+            <div className="flex-1 min-h-0 overflow-y-auto p-6 custom-scrollbar">
+                <div className="flex items-center justify-between mb-4 sticky top-0 bg-dark-card/80 backdrop-blur-md py-2 z-10 rounded-xl px-2">
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-text-secondary flex items-center gap-2">
+                        <Briefcase className="w-3.5 h-3.5" /> Active Vaults
+                    </h4>
+                    <span className="bg-white/5 border border-white/5 px-3 py-1 rounded-full text-[10px] font-black text-white/40">{positions.length}</span>
+                </div>
 
-                <div className="space-y-3">
+                <div className="space-y-4">
                     {positions.map((pos) => (
-                        <div key={pos.id} className="p-3 rounded-xl bg-dark-bg border border-dark-border hover:border-brand-green/30 transition-all cursor-pointer group relative overflow-hidden">
-                            <div className={`absolute left-0 top-0 bottom-0 w-1 ${pos.type === 'Long' ? 'bg-brand-green' : 'bg-brand-red'}`} />
+                        <div key={pos.id} className="p-5 rounded-[32px] bg-white/5 border border-white/5 hover:border-brand-mint/30 hover:bg-white/10 transition-all duration-500 cursor-pointer group relative overflow-hidden">
+                            <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${pos.type === 'Long' ? 'bg-brand-mint' : 'bg-brand-red'}`} />
 
-                            <div className="flex justify-between items-center mb-2 pl-2">
-                                <div className="flex items-center gap-2">
-                                    <span className="font-bold text-sm text-white">{pos.pair}</span>
-                                    <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${pos.type === 'Long' ? 'text-brand-green bg-brand-green/10' : 'text-brand-red bg-brand-red/10'}`}>
-                                        {pos.leverage}x
-                                    </span>
+                            <div className="flex justify-between items-center mb-4 pl-2">
+                                <div className="flex flex-col">
+                                    <span className="font-black text-white font-display uppercase tracking-tight">{pos.pair}</span>
+                                    <div className="flex items-center gap-2 mt-0.5">
+                                        <span className={cn(
+                                            "text-[10px] font-black uppercase tracking-widest",
+                                            pos.type === 'Long' ? 'text-brand-mint' : 'text-brand-red'
+                                        )}>
+                                            {pos.type}
+                                        </span>
+                                        <span className="text-[10px] font-black text-white/20 uppercase tracking-widest bg-white/5 px-2 py-0.5 rounded-full border border-white/5">
+                                            {pos.leverage}x
+                                        </span>
+                                    </div>
                                 </div>
-                                <div className={`text-sm font-bold font-mono ${pos.pnl >= 0 ? 'text-brand-green' : 'text-brand-red'}`}>
-                                    {pos.pnl >= 0 ? '+' : ''}{pos.pnl}
+                                <div className="text-right">
+                                    <div className={cn(
+                                        "text-lg font-black font-display",
+                                        pos.pnl >= 0 ? 'text-brand-mint' : 'text-brand-red'
+                                    )}>
+                                        {pos.pnl >= 0 ? '+' : ''}{pos.pnl.toFixed(2)}
+                                    </div>
+                                    <div className="text-[10px] font-black text-white/30 uppercase tracking-widest font-mono">
+                                        {pos.pnlPercent}%
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-y-1 gap-x-4 text-[11px] text-text-secondary pl-2 mb-2">
-                                <div className="flex justify-between">
-                                    <span>Entry</span>
-                                    <span className="text-white font-mono">{pos.entry.toLocaleString()}</span>
+                            <div className="grid grid-cols-2 gap-4 text-[10px] text-text-secondary pl-2 font-mono">
+                                <div className="space-y-1">
+                                    <div className="flex justify-between items-center bg-white/5 px-2 py-1 rounded-lg">
+                                        <span className="uppercase font-black text-[8px] opacity-40">Entry</span>
+                                        <span className="text-white font-bold">{pos.entry.toLocaleString()}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center bg-white/5 px-2 py-1 rounded-lg">
+                                        <span className="uppercase font-black text-[8px] opacity-40">Mark</span>
+                                        <span className="text-white font-bold">{pos.mark.toLocaleString()}</span>
+                                    </div>
                                 </div>
-                                <div className="flex justify-between">
-                                    <span>Mark</span>
-                                    <span className="text-white font-mono">{pos.mark.toLocaleString()}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span>Size</span>
-                                    <span className="text-white font-mono">${pos.size.toLocaleString()}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span>Liq</span>
-                                    <span className="text-brand-orange font-mono">{pos.liq.toLocaleString()}</span>
+                                <div className="space-y-1">
+                                    <div className="flex justify-between items-center bg-white/5 px-2 py-1 rounded-lg">
+                                        <span className="uppercase font-black text-[8px] opacity-40">Size</span>
+                                        <span className="text-white font-bold">${pos.size.toLocaleString()}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center bg-white/5 px-2 py-1 rounded-lg">
+                                        <span className="uppercase font-black text-[8px] opacity-40 text-brand-red">Liq</span>
+                                        <span className="text-brand-red font-bold">{pos.liq.toLocaleString()}</span>
+                                    </div>
                                 </div>
                             </div>
-
-                            <button className="w-[calc(100%-8px)] ml-2 py-1.5 rounded bg-dark-border/50 text-xs font-medium hover:bg-white hover:text-dark-bg transition-all opacity-0 group-hover:opacity-100 absolute bottom-2 left-0 right-2 backdrop-blur-sm">
-                                Close Position
-                            </button>
                         </div>
                     ))}
 
                     {positions.length === 0 && (
-                        <div className="text-center py-10 text-text-secondary text-xs">
-                            No open positions
+                        <div className="text-center py-16 px-6 glass-card rounded-[32px] border-white/5 border-dashed">
+                            <Briefcase className="w-12 h-12 text-white/5 mx-auto mb-4" />
+                            <p className="text-text-secondary text-[10px] font-black uppercase tracking-widest">
+                                No active vaults detected
+                            </p>
                         </div>
                     )}
+                </div>
+            </div>
+
+            {/* Footer Status */}
+            <div className="px-6 py-4 border-t border-white/5 flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-white/20">
+                <div className="flex items-center gap-2">
+                    <ShieldCheck className="w-3.5 h-3.5 text-brand-mint" /> Margin Safe
+                </div>
+                <div className="flex items-center gap-2">
+                    <Zap className="w-3.5 h-3.5 text-brand-red" /> 12ms Edge
                 </div>
             </div>
         </div>

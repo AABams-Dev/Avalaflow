@@ -1,12 +1,14 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Outfit, Space_Grotesk } from 'next/font/google';
 import { Providers } from '@/components/Providers';
+import { Footer } from '@/components/layout/Footer';
 
-const inter = Inter({ subsets: ['latin'] });
+const outfit = Outfit({ subsets: ['latin'], variable: '--font-sans' });
+const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-display' });
 
 export const metadata: Metadata = {
-  title: 'Avalaflow | Physical-Digital Collectible Platform',
+  title: 'Avalaflow | Premium Collectible Finance Platform',
   description: 'Bridge physical NFC-tagged collectibles with digital ownership on Avalanche C-Chain. Scan, Verify, and Mint.',
 };
 
@@ -23,9 +25,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${inter.className} min-h-screen bg-dark-bg text-text-primary antialiased overflow-x-hidden`}>
-        <Providers>{children}</Providers>
+    <html lang="en" className={`dark ${outfit.variable} ${spaceGrotesk.variable}`}>
+      <body className="min-h-screen bg-dark-bg text-text-primary antialiased overflow-x-hidden font-sans">
+        <Providers>
+          <div className="flex flex-col min-h-screen">
+            <div className="flex-1">
+              {children}
+            </div>
+            <Footer />
+          </div>
+        </Providers>
       </body>
     </html>
   );

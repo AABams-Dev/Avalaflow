@@ -5,68 +5,107 @@ import { AVALA_NFT_ABI, AVALA_NFT_ADDRESS } from '@/lib/contracts';
 import { useEffect, useState } from 'react';
 
 export function useNFTs() {
-    // 1. Fetch total supply to know how many NFTs to fetch
-    const { data: totalSupply, isLoading: isLoadingSupply } = useReadContract({
+    const { data: totalSupply, isLoading: isLoadingSupply, isSuccess: isSupplySuccess, isError: isSupplyError } = useReadContract({
         address: AVALA_NFT_ADDRESS as `0x${string}`,
         abi: AVALA_NFT_ABI,
         functionName: 'totalSupply',
     });
 
-    // 2. Prepare calls for tokenURIs and Owners (Example: fetch first 6)
     const tokenCount = totalSupply ? Number(totalSupply) : 0;
-    const limit = Math.min(tokenCount, 6);
+    const limit = Math.min(tokenCount, 12);
 
-    // We'll fetch the most recent ones (if we know the order, but let's just do 0-5 for now)
     const contracts = [];
-    for (let i = 0; i < limit; i++) {
-        contracts.push({
-            address: AVALA_NFT_ADDRESS as `0x${string}`,
-            abi: AVALA_NFT_ABI,
-            functionName: 'tokenURI',
-            args: [BigInt(i)],
-        });
-        contracts.push({
-            address: AVALA_NFT_ADDRESS as `0x${string}`,
-            abi: AVALA_NFT_ABI,
-            functionName: 'ownerOf',
-            args: [BigInt(i)],
-        });
+    if (isSupplySuccess && tokenCount > 0) {
+        for (let i = 0; i < limit; i++) {
+            contracts.push({
+                address: AVALA_NFT_ADDRESS as `0x${string}`,
+                abi: AVALA_NFT_ABI,
+                functionName: 'tokenURI',
+                args: [BigInt(i)],
+            });
+            contracts.push({
+                address: AVALA_NFT_ADDRESS as `0x${string}`,
+                abi: AVALA_NFT_ABI,
+                functionName: 'ownerOf',
+                args: [BigInt(i)],
+            });
+        }
     }
 
     const { data: nftDetails, isLoading: isLoadingDetails } = useReadContracts({
-        contracts,
+        contracts: contracts as any,
+        query: {
+            enabled: contracts.length > 0,
+        }
     });
 
     const [nfts, setNfts] = useState<any[]>([]);
+    const [isFormatting, setIsFormatting] = useState(false);
 
     useEffect(() => {
-        if (nftDetails) {
-            const formattedNfts = [];
-            for (let i = 0; i < limit; i++) {
-                const uri = nftDetails[i * 2]?.result as string;
-                const owner = nftDetails[i * 2 + 1]?.result as string;
-
-                // In a real app, you'd fetch the metadata from the URI (IPFS/HTTP)
-                // For now, we'll format it with what we have
-                formattedNfts.push({
-                    id: i,
-                    name: `Avalaflow #${i}`,
-                    owner: owner ? `${owner.slice(0, 6)}...${owner.slice(-4)}` : 'Unknown',
-                    uri: uri,
-                    // Default styles for the display cards
-                    price: "Unlisted",
-                    rarity: i % 3 === 0 ? "Legendary" : i % 2 === 0 ? "Rare" : "Common",
-                    color: i % 3 === 0 ? "text-brand-red" : i % 2 === 0 ? "text-brand-mint" : "text-white/40",
-                    bg: i % 3 === 0 ? "bg-brand-red/10" : i % 2 === 0 ? "bg-brand-mint/10" : "bg-white/5",
-                });
+        let isMounted = true;
+        async function formatNFTs() {
+            if (tokenCount === 0 || isSupplyError) {
+                if (isMounted) setNfts([]);
+                return;
             }
-            setNfts(formattedNfts);
+            if (nftDetails && nftDetails.length === contracts.length) {
+                if (isMounted) setIsFormatting(true);
+                const formattedNfts = [];
+                for (let i = 0; i < limit; i++) {
+                    const uriResult = nftDetails[i * 2]?.result as string;
+                    const ownerResult = nftDetails[i * 2 + 1]?.result as string;
+
+                    let imageUrl = '';
+                    let nftName = `Avalaflow #${i}`;
+                    let rarity = i % 3 === 0 ? "Legendary" : i % 2 === 0 ? "Rare" : "Common";
+
+                    try {
+                        if (uriResult) {
+                            const httpUrl = uriResult.startsWith('ipfs://') ? uriResult.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/') : uriResult;
+                            const response = await fetch(httpUrl);
+                            if (response.ok) {
+                                const metadata = await response.json();
+                                imageUrl = metadata.image ? (metadata.image.startsWith('ipfs://') ? metadata.image.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/') : metadata.image) : '';
+                                if (metadata.name) nftName = metadata.name;
+                                if (metadata.attributes) {
+                                    const rarityTrait = metadata.attributes.find((a: any) => a.trait_type === 'Rarity');
+                                    if (rarityTrait) rarity = rarityTrait.value;
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        console.error("Failed to fetch metadata for token", i, e);
+                    }
+
+                    formattedNfts.push({
+                        id: i,
+                        tokenId: i.toString(),
+                        name: nftName,
+                        owner: ownerResult ? `${ownerResult.slice(0, 6)}...${ownerResult.slice(-4)}` : 'Unknown',
+                        uri: uriResult,
+                        image: imageUrl,
+                        price: "Unlisted",
+                        rarity: rarity,
+                        color: rarity === "Legendary" ? "text-brand-red" : rarity === "Rare" ? "text-brand-mint" : "text-white/40",
+                        bg: rarity === "Legendary" ? "bg-brand-red/10" : rarity === "Rare" ? "bg-brand-mint/10" : "bg-white/5",
+                    });
+                }
+                if (isMounted) {
+                    setNfts(formattedNfts);
+                    setIsFormatting(false);
+                }
+            }
         }
-    }, [nftDetails, limit]);
+        formatNFTs();
+        return () => {
+            isMounted = false;
+        };
+    }, [nftDetails, limit, tokenCount, isSupplyError]);
 
     return {
         nfts,
-        isLoading: isLoadingSupply || isLoadingDetails,
+        isLoading: isLoadingSupply || isLoadingDetails || isFormatting || (isSupplySuccess && tokenCount > 0 && nfts.length === 0 && !isSupplyError),
         tokenCount
     };
 }

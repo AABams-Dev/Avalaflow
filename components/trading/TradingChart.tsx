@@ -10,14 +10,11 @@ export function TradingChart() {
     const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
     const { assetCode, chartTimeframe } = useTradingStore();
 
-    // Map our timeframes to Binance intervals
-    // 2M, 4M, 1Y not directly supported by binance stream usually, mapping to nearest or monthly.
     const mapTimeframe = (tf: string) => {
         const map: Record<string, string> = {
             '1m': '1m', '5m': '5m', '15m': '15m', '30m': '30m',
             '1h': '1h', '2h': '2h', '4h': '4h', '8h': '8h',
             '1d': '1d', '3d': '3d', '1w': '1w', '1M': '1M',
-            // Mapped fallbacks
             '2M': '1M', '4M': '1M', '1Y': '1M'
         };
         return map[tf] || '15m';
@@ -28,31 +25,32 @@ export function TradingChart() {
 
         const chart = createChart(chartContainerRef.current, {
             layout: {
-                background: { type: ColorType.Solid, color: '#0d0e12' },
-                textColor: '#9ca3af',
+                background: { type: ColorType.Solid, color: 'transparent' },
+                textColor: '#94A3B8',
+                fontFamily: 'Inter, sans-serif',
             },
             grid: {
-                vertLines: { color: '#1f2937' },
-                horzLines: { color: '#1f2937' },
+                vertLines: { color: 'rgba(255, 255, 255, 0.03)' },
+                horzLines: { color: 'rgba(255, 255, 255, 0.03)' },
             },
             width: chartContainerRef.current.clientWidth,
             height: chartContainerRef.current.clientHeight,
             timeScale: {
                 timeVisible: true,
                 secondsVisible: false,
-                borderColor: '#232630',
+                borderColor: 'rgba(255, 255, 255, 0.05)',
             },
             rightPriceScale: {
-                borderColor: '#232630',
+                borderColor: 'rgba(255, 255, 255, 0.05)',
             }
         });
 
         const series = chart.addSeries(CandlestickSeries, {
-            upColor: '#3fb68b',
-            downColor: '#ff5353',
+            upColor: '#00FFA3', // brand-mint
+            downColor: '#E84142', // brand-red
             borderVisible: false,
-            wickUpColor: '#3fb68b',
-            wickDownColor: '#ff5353',
+            wickUpColor: '#00FFA3',
+            wickDownColor: '#E84142',
         });
 
         chartRef.current = chart;
@@ -73,9 +71,8 @@ export function TradingChart() {
             chartRef.current = null;
             seriesRef.current = null;
         };
-    }, []); // Initialize once
+    }, []);
 
-    // Fetch initial data and setup WebSocket
     useEffect(() => {
         if (!seriesRef.current || !chartRef.current) return;
 
@@ -85,10 +82,6 @@ export function TradingChart() {
 
         const fetchHistory = async () => {
             try {
-                // Using a public proxy or direct if CORS allows (Binance often blocks direct browser fetch calls due to CORS, but let's try or use a mock fallback)
-                // In a real app you proxy this via Next.js API route.
-                // For this demo, we will try direct, if fail, we generate mock data to ensure chart shows SOMETHING.
-
                 try {
                     const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${symbol.toUpperCase()}&interval=${interval}&limit=500`);
                     if (!res.ok) throw new Error('Network response was not ok');
@@ -103,12 +96,11 @@ export function TradingChart() {
                     seriesRef.current?.setData(formattedData);
                 } catch (apiError) {
                     console.warn('Binance API fetch failed (likely CORS), using mock data', apiError);
-                    // Mock Generation
                     const now = Math.floor(Date.now() / 1000);
                     const mockData = [];
                     let price = 64000;
                     for (let i = 500; i > 0; i--) {
-                        const time = (now - i * 60 * (15)) as UTCTimestamp; // assuming 15m roughly
+                        const time = (now - i * 60 * (15)) as UTCTimestamp;
                         const open = price;
                         const close = price * (1 + (Math.random() - 0.5) * 0.01);
                         const high = Math.max(open, close) * (1 + Math.random() * 0.005);
@@ -125,7 +117,6 @@ export function TradingChart() {
 
         fetchHistory();
 
-        // 2. WebSocket for live updates
         try {
             ws = new WebSocket(`wss://stream.binance.com:9443/ws/${symbol}@kline_${interval}`);
 
